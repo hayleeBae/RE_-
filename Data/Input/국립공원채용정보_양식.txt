@@ -1,0 +1,40 @@
+' DataTable을 HTML 형식으로 변환하는 함수
+Function ConvertDataTableToHtml(dataTable As DataTable) As String
+    Dim htmlTable As New StringBuilder()
+
+    ' HTML 표 시작 태그 작성
+    htmlTable.Append("<table border='1'>")
+
+    ' 테이블 헤더 작성
+    htmlTable.Append("<tr>")
+    For Each column As DataColumn In dataTable.Columns
+        htmlTable.Append("<th>" + column.ColumnName + "</th>")
+    Next
+    htmlTable.Append("</tr>")
+
+    ' 테이블 내용 작성
+    For Each row As DataRow In dataTable.Rows
+        htmlTable.Append("<tr>")
+        For Each column As DataColumn In dataTable.Columns
+            htmlTable.Append("<td>" + row(column).ToString() + "</td>")
+        Next
+        htmlTable.Append("</tr>")
+    Next
+
+    ' HTML 표 종료 태그 작성
+    htmlTable.Append("</table>")
+
+    ' 완성된 HTML 형식의 문자열 반환
+    Return htmlTable.ToString()
+End Function
+
+Dim excelFilePath As String = "Data\Output\" + "국립공원채용정보_배혜빈.xlsx"
+Dim excelData As DataTable = New DataTable()
+excelData = ReadExcelFile(excelFilePath) ' ReadExcelFile은 Excel 파일을 읽어와 DataTable로 변환하는 함수입니다.
+
+
+' DataTable을 HTML 형식의 문자열로 변환하는 함수 호출
+Dim htmlContent As String = ConvertDataTableToHtml(excelData)
+
+' Send SMTP Mail Message 액티비티에서 HTML 파일을 첨부하여 메일 발송
+' HTML 파일의 경로(htmlFilePath)를 첨부 파일로 지정하여 Send SMTP Mail Message 액티비티를 구성
