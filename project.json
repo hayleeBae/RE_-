@@ -1,5 +1,5 @@
 {
-  "name": "국립공원_채용정보_RE-Framework",
+  "name": "RPA03_국립공원_채용정보_배혜빈",
   "projectId": "69e11bda-96f1-4b6e-a0b7-86d43fc46f59",
   "description": "TransactionItem을 Datarow로 사용하도록 설정한 템플릿",
   "main": "Main.xaml",

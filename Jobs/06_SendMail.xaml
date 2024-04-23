@@ -7,7 +7,7 @@
   <VisualBasic.Settings>
     <x:Null />
   </VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>1222,868</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>1222,899</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>_06_SendMail_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
     <sco:Collection x:TypeArguments="x:String">
@@ -48,6 +48,7 @@
       <x:String>UiPath.Excel</x:String>
       <x:String>UiPath.Excel.Activities</x:String>
       <x:String>UiPath.Platform.ResourceHandling</x:String>
+      <x:String>UiPath.DataTableUtilities</x:String>
     </sco:Collection>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
@@ -113,14 +114,14 @@
       <AssemblyReference>WindowsBase</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="_06_SendMail" sap:VirtualizedContainerService.HintSize="416,803" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence DisplayName="_06_SendMail" sap:VirtualizedContainerService.HintSize="416,834" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="x:String" Name="strEMail" />
       <Variable x:TypeArguments="ss:SecureString" Name="strPW" />
       <Variable x:TypeArguments="x:String" Name="strMailForm" />
       <Variable x:TypeArguments="x:String" Default="File.ReadAllText(htmlFilePath" Name="htmlContent" />
       <Variable x:TypeArguments="x:String" Default="Data\Input\국립공원채용정보_양식.txt" Name="htmlFilePath" />
-      <Variable x:TypeArguments="x:String" Name="dtHtml" />
+      <Variable x:TypeArguments="x:String" Name="finalHtml" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -146,19 +147,20 @@
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
     </ui:CommentOut>
-    <ui:InvokeCode ContinueOnError="{x:Null}" Code="Sub GenerateHtmlTableAndSendEmail()&#xD;&#xA;    ' DataTable을 HTML 형식으로 변환하는 함수&#xD;&#xA;    Dim sb As New System.Text.StringBuilder()&#xD;&#xA;    sb.Append(&quot;&lt;html&gt;&lt;body&gt;&lt;table border='1'&gt;&quot;)&#xD;&#xA;&#xD;&#xA;    ' 테이블 헤더 생성&#xD;&#xA;    sb.Append(&quot;&lt;tr&gt;&quot;)&#xD;&#xA;    For Each col As DataColumn In in_dt_채용진행중_filter.Columns&#xD;&#xA;        sb.Append(&quot;&lt;th&gt;&quot; + col.ColumnName + &quot;&lt;/th&gt;&quot;)&#xD;&#xA;    Next&#xD;&#xA;    sb.Append(&quot;&lt;/tr&gt;&quot;)&#xD;&#xA;&#xD;&#xA;    ' 테이블 내용 생성&#xD;&#xA;    For Each row As DataRow In in_dt_채용진행중_filter.Rows&#xD;&#xA;        sb.Append(&quot;&lt;tr&gt;&quot;)&#xD;&#xA;        For Each col As DataColumn In in_dt_채용진행중_filter.Columns&#xD;&#xA;            sb.Append(&quot;&lt;td&gt;&quot; + row(col.ColumnName).ToString() + &quot;&lt;/td&gt;&quot;)&#xD;&#xA;        Next&#xD;&#xA;        sb.Append(&quot;&lt;/tr&gt;&quot;)&#xD;&#xA;    Next&#xD;&#xA;&#xD;&#xA;    sb.Append(&quot;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;&quot;)&#xD;&#xA;&#xD;&#xA;Dim dtHtml As String = DataTableToHtml(in_dt_채용진행중_filter)" DisplayName="Invoke Code" sap:VirtualizedContainerService.HintSize="354,205" sap2010:WorkflowViewState.IdRef="InvokeCode_2">
+    <ui:InvokeCode ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="코드 내부에도 에러처리 필요 -&gt; 무한 대기 됨" Code="' HTML 코드를 생성할 StringBuilder 초기화&#xA;Dim sb As New System.Text.StringBuilder()&#xA;&#xA;' CSS 스타일 추가&#xA;sb.Append(&quot;&lt;style type=&quot;&quot;text/css&quot;&quot;&gt;&quot;)&#xA;sb.Append(&quot;.tg  {border-collapse:collapse;border-spacing:0;}&quot;)&#xA;sb.Append(&quot;.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;&quot;)&#xA;sb.Append(&quot;  overflow:hidden;padding:10px 5px;word-break:normal;}&quot;)&#xA;sb.Append(&quot;.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;&quot;)&#xA;sb.Append(&quot;  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}&quot;)&#xA;sb.Append(&quot;.tg .tg-q6po{background-color:#FF0;border-color:inherit;font-weight:bold;text-align:center;vertical-align:bottom}&quot;)&#xA;sb.Append(&quot;.tg .tg-za14{border-color:inherit;text-align:left;vertical-align:bottom}&quot;)&#xA;sb.Append(&quot;.tg tr {border-bottom: 1px solid black;} /* 각 행 아래에 선 추가 */&quot;)&#xA;sb.Append(&quot;.tg td {border-right: 1px solid black;} /* 각 셀 우측에 선 추가 */&quot;)&#xA;sb.Append(&quot;.tg th {border-right: 1px solid black;} /* 헤더 셀 우측에 선 추가 */&quot;)&#xA;sb.Append(&quot;&lt;/style&gt;&quot;)&#xA;&#xA;' HTML 테이블 헤더 생성&#xA;sb.Append(&quot;&lt;table class=&quot;&quot;tg&quot;&quot; style=&quot;&quot;border: 1px solid black;&quot;&quot;&gt;&lt;thead&gt;&lt;tr&gt;&quot;)&#xA;For Each col As DataColumn In in_dt_채용진행중_filter.Columns&#xA;    sb.Append(&quot;&lt;th class=&quot;&quot;tg-q6po&quot;&quot;&gt;&quot; + col.ColumnName + &quot;&lt;/th&gt;&quot;)&#xA;Next&#xA;sb.Append(&quot;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&quot;)&#xA;&#xA;' HTML 테이블 데이터 생성&#xA;For Each row As DataRow In in_dt_채용진행중_filter.Rows&#xA;    sb.Append(&quot;&lt;tr&gt;&quot;)&#xA;    For Each col As DataColumn In in_dt_채용진행중_filter.Columns&#xA;        sb.Append(&quot;&lt;td class=&quot;&quot;tg-za14&quot;&quot;&gt;&quot; + row(col.ColumnName).ToString() + &quot;&lt;/td&gt;&quot;)&#xA;    Next&#xA;    sb.Append(&quot;&lt;/tr&gt;&quot;)&#xA;Next&#xA;&#xA;' HTML 테이블 닫기&#xA;sb.Append(&quot;&lt;/tbody&gt;&lt;/table&gt;&quot;)&#xA;&#xA;' 최종 HTML 코드 출력&#xA;Dim finalHtml As String = sb.ToString()&#xA;&#xA;out_Html = finalHtml" DisplayName="Invoke Code" sap:VirtualizedContainerService.HintSize="354,236" sap2010:WorkflowViewState.IdRef="InvokeCode_3">
       <ui:InvokeCode.Arguments>
         <InArgument x:TypeArguments="sd:DataTable" x:Key=" in_dt_채용진행중_filter">[in_dt_채용진행중_filter]</InArgument>
-        <OutArgument x:TypeArguments="x:String" x:Key="dtHtml">[dtHtml]</OutArgument>
+        <OutArgument x:TypeArguments="x:String" x:Key="out_Html">[finalHtml]</OutArgument>
       </ui:InvokeCode.Arguments>
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
     </ui:InvokeCode>
-    <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" ContinueOnError="{x:Null}" MailMessage="{x:Null}" Name="{x:Null}" Password="{x:Null}" ReplyTo="{x:Null}" Result="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" sap2010:Annotation.AnnotationText="- 호스트 설정&#xA;  - 서버 : &quot;smtp.gmail.com&quot;, &quot;smtp.naver.com&quot;&#xA;  - 포트 : 587&#xA;&#xA;in_dicConfig(&quot;Receive&quot;).ToString" Body="[dtHtml]" DisplayName="Send SMTP Mail Message" Email="[strEmail]" EnableSSL="True" From="[strEmail]" sap:VirtualizedContainerService.HintSize="354,262" sap2010:WorkflowViewState.IdRef="SendMail_1" IgnoreCRL="False" IsBodyHtml="True" Port="587" SecureConnection="Auto" SecurePassword="[strPW]" Server="smtp.gmail.com" Subject="[String.Format(in_dicConfig(&quot;Title&quot;).ToString, DateTime.Today.ToString(&quot;yyyy/MM/dd&quot;))]" To="medicine94@naver.com">
+    <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" ContinueOnError="{x:Null}" MailMessage="{x:Null}" Name="{x:Null}" Password="{x:Null}" ReplyTo="{x:Null}" Result="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" sap2010:Annotation.AnnotationText="- 호스트 설정&#xA;  - 서버 : &quot;smtp.gmail.com&quot;, &quot;smtp.naver.com&quot;&#xA;  - 포트 : 587&#xA;&#xA;in_dicConfig(&quot;Receive&quot;).ToString" Body="[finalHtml]" DisplayName="Send SMTP Mail Message" Email="[strEmail]" EnableSSL="True" From="[strEmail]" sap:VirtualizedContainerService.HintSize="354,262" sap2010:WorkflowViewState.IdRef="SendMail_1" IgnoreCRL="False" IsBodyHtml="True" Port="587" SecureConnection="Auto" SecurePassword="[strPW]" Server="smtp.gmail.com" Subject="[String.Format(in_dicConfig(&quot;Title&quot;).ToString, DateTime.Today.ToString(&quot;yyyy/MM/dd&quot;))]" To="medicine94@naver.com">
       <ui:SendMail.Files>
         <scg:List x:TypeArguments="InArgument(x:String)" Capacity="4">
           <InArgument x:TypeArguments="x:String">["Data\Output\" + "국립공원채용정보_배혜빈.xlsx"]</InArgument>
